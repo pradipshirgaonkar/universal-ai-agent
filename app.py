@@ -7,27 +7,24 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.agents import Tool, AgentExecutor, create_react_agent
-from langchain import hub
-from langchain.agents import initialize_agent, AgentType
+from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
+from langchain_community.tools import DuckDuckGoSearchRun # Naya Tool
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
-st.title("🧠 Universal Subject-Matter Expert Agent")
-st.sidebar.info("Just convert the PDF file into a folder, and ask me whatever you want to know about that topic.!")
+st.title("🧠 Universal AI Agent (PDF + Web Search)")
 
 load_dotenv()
 
 # --- STEP 1: DYNAMIC PDF DISCOVERY ---
 @st.cache_resource
 def build_expert_brain():
-    # Folder mein jo bhi pehli PDF milegi, use utha lega
     pdf_files = glob.glob("*.pdf")
     if not pdf_files:
-        return None, "File not found!"
+        return None, "No PDF"
     
-    active_pdf = pdf_files[0] # Pehli PDF ko subject banao
+    active_pdf = pdf_files[0] 
     loader = PyPDFLoader(active_pdf)
     data = loader.load()
     
@@ -40,48 +37,64 @@ def build_expert_brain():
 
 vdb, current_subject = build_expert_brain()
 
-# --- STEP 2: BRAIN & MEMORY ---
-if "memory" not in st.session_state:
-    st.session_state.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash", 
-    google_api_key=os.getenv("GOOGLE_API_KEY"),
-    system_instruction="You are a helpful incurrent subject assistant. Always respond in the same language the user uses to ask the question (Hindi, English, or Hinglish)."
-)
-
-# --- STEP 3: THE EXPERT TOOL ---
+# --- STEP 2: TOOLS SETUP ---
+# 1. PDF Tool
 def expert_knowledge(query):
-    results = vdb.similarity_search(query, k=3)
-    return "\n".join([r.page_content for r in results])
+    if vdb:
+        results = vdb.similarity_search(query, k=3)
+        return "\n".join([r.page_content for r in results])
+    return "No PDF uploaded."
+
+# 2. Web Search Tool
+search = DuckDuckGoSearchRun()
 
 tools = [
     Tool(
-        name="Expert_Knowledge_Base",
+        name="PDF_Knowledge_Base",
         func=expert_knowledge,
-        description=f"Use this tool to answer questions about {current_subject}."
+        description=f"Use this FIRST to answer questions about {current_subject}."
+    ),
+    Tool(
+        name="Web_Search",
+        func=search.run,
+        description="Use this ONLY if you cannot find the answer in the PDF or for current events/news."
     )
 ]
 
-# --- STEP 4: AGENT ENGINE ---
+# --- STEP 3: AGENT & MEMORY ---
+if "memory" not in st.session_state:
+    st.session_state.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
+llm = ChatGoogleGenerativeAI(
+    model="gemini-1.5-flash", 
+    google_api_key=api_key,
+    temperature=0.5,
+    system_instruction="You are a smart assistant. First check the PDF tool. If the info is missing, use Web Search."
+)
+
 agent = initialize_agent(
     tools=tools,
     llm=llm,
     agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
     verbose=True,
-    memory=st.session_state.memory
+    memory=st.session_state.memory,
+    handle_parsing_errors=True 
 )
 
 # --- UI LOGIC ---
 if vdb:
-    st.success(f"✅ Current Expertise: **{current_subject}**")
-    user_query = st.chat_input("Ask me anything about this subject...")
+    st.success(f"✅ Loaded: **{current_subject}** | 🌐 Web Search: **Active**")
+    
+    user_query = st.chat_input("Ask about the PDF or anything else...")
     
     if user_query:
         with st.chat_message("user"):
             st.write(user_query)
+        
         with st.chat_message("assistant"):
             response = agent.run(input=user_query)
             st.write(response)
 else:
-    st.error("⚠️ Please upload or add a PDF file in the project folder!")
+    st.error("⚠️ Please add a PDF file in the folder!")
