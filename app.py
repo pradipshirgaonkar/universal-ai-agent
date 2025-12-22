@@ -7,7 +7,9 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.agents import Tool, initialize_agent, AgentType
+from langchain.agents import Tool, AgentExecutor, create_react_agent
+from langchain import hub
+from langchain.agents import initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
 
 # --- UI Setup ---
