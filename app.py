@@ -7,16 +7,15 @@ import os
 import glob 
 from dotenv import load_dotenv
 
-# LangChain Essential Imports
+# Essential AI Imports
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# AGENT FIX: 
+# AGENT FIX: Inhe dhyan se copy karein
 from langchain.agents import initialize_agent, AgentType
-from langchain.agents.agent import AgentExecutor
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
