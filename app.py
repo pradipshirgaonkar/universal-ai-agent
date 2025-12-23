@@ -7,16 +7,16 @@ import os
 import glob 
 from dotenv import load_dotenv
 
-# Naye LangChain imports (Compatibility ke liye)
+# LangChain Essential Imports
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# Yahan badlav kiya gaya hai
-from langchain.agents import AgentExecutor, create_react_agent
+# AGENT FIX: 
 from langchain.agents import initialize_agent, AgentType
+from langchain.agents.agent import AgentExecutor
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
