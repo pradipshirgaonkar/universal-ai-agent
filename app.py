@@ -25,9 +25,9 @@ if not api_key:
 # LLM Setup with safety settings
 try:
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", # Agar ye fail ho toh "models/gemini-1.5-flash" try karein
-        google_api_key=api_key,
-        temperature=0.3,
+    model="gemini-1.5-flash", 
+    google_api_key=api_key,
+    temperature=0.2,
     )
 except Exception as e:
     st.error(f"Failed to initialize Gemini: {e}")
