@@ -15,10 +15,16 @@ api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
 # Stable Model Initialization
 # 'gemini-1.5-flash' stable version ke liye yahi string sahi hai
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash", 
-    google_api_key=api_key,
-    temperature=0.3
+try:
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash", 
+        google_api_key=api_key,
+        temperature=0.3,
+        # Force the stable API version instead of v1beta
+        version="v1" 
+    )
+except Exception as e:
+    st.error(f"Failed to initialize Gemini: {e}")
 )
 
 # PDF Processing function
