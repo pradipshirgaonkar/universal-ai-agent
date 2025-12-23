@@ -24,7 +24,7 @@ try:
         version="v1" 
     )
 except Exception as e:
-    st.error(f"Failed to initialize Gemini: {e}")
+    st.error(f"Failed to initialize Gemini: {e}"
 )
 
 # PDF Processing function
