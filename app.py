@@ -18,7 +18,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Modern LangChain Stable Imports
 import langchain
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain.agents.agent import AgentExecutor  # Path badal gaya hai
+from langchain.agents import create_react_agent
 from langchain import hub
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
