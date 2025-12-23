@@ -3,19 +3,24 @@ import os
 import glob 
 from dotenv import load_dotenv
 
+# Pehle basic packages
 import langchain
-# Naye LangChain versions ke liye ye zaroori hai
-from langchain.agents import Tool, AgentExecutor, create_react_agent
-from langchain.memory import ConversationBufferMemory
-from langchain import hub
+import langchain_community
 
-# Baki community imports
+# Ab specific tools ko alag-alag import karein
+from langchain.agents import Tool
+from langchain.agents import AgentExecutor
+from langchain.agents import create_react_agent
+from langchain.memory import ConversationBufferMemory
+
+# Baki components
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.tools import DuckDuckGoSearchRun # Iska path double check karein
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain import hub
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
