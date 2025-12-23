@@ -19,6 +19,11 @@ from langchain.agents import initialize_agent, AgentType
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain import hub
+from langchain_core.tools import Tool
+from langchain.memory import ConversationBufferMemory
+from langchain_community.tools import DuckDuckGoSearchRun
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
@@ -77,18 +82,22 @@ api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash", 
     google_api_key=api_key,
-    transport="rest",
+    transport="rest", # <---   gRPC error  
     temperature=0.5
 )
 
-# Stable Agent Initialization
-agent = initialize_agent(
-    tools=tools,
-    llm=llm,
-    agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
+prompt = hub.pull("hwchase17/react")
+
+ 
+agent = create_react_agent(llm, tools, prompt)
+
+# 
+agent_executor = AgentExecutor(
+    agent=agent, 
+    tools=tools, 
+    memory=st.session_state.memory, 
     verbose=True,
-    memory=st.session_state.memory,
-    handle_parsing_errors=True 
+    handle_parsing_errors=True
 )
 
 # --- UI LOGIC ---
