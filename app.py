@@ -33,7 +33,10 @@ def process_pdf(uploaded_file):
     docs = text_splitter.split_documents(data)
     
     # Modern stable embeddings
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
+    model_kwargs={'device': 'cpu'} # Force CPU for Streamlit Cloud
+)
     vdb = Chroma.from_documents(docs, embeddings)
     os.remove(tmp_path)
     return vdb
