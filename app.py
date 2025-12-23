@@ -3,12 +3,15 @@ import os
 import glob 
 from dotenv import load_dotenv
 
-# Modern LangChain Imports
+# Basic Langchain imports
+import langchain
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# Agent specific imports (Modern way)
 from langchain.agents import Tool, AgentExecutor, create_react_agent
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
