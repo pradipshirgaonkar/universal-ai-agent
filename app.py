@@ -3,20 +3,20 @@ import os
 import glob 
 from dotenv import load_dotenv
 
-# Basic Setup
-load_dotenv()
-
-# Modern Modular Imports (Avoiding langchain.agents directly)
-from langchain_core.tools import Tool
-from langchain.agents import AgentExecutor, create_react_agent
+# Basic Packages
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# AGENTS FIX: Direct imports (langchain.agents ko bypass kar rahe hain)
+from langchain.agents.agent import AgentExecutor
+from langchain.agents.react.agent import create_react_agent
+from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain import hub
-from langchain.memory import ConversationBufferMemory
+from langchain_core.tools import Tool
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
