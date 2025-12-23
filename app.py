@@ -14,8 +14,14 @@ from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# AGENT FIX: Inhe dhyan se copy karein
+# AGENT FIX: 
+from langchain.agents import create_react_agent
+from langchain import hub
+from langchain_core.tools import Tool
+from langchain.memory import ConversationBufferMemory
+from langchain_community.tools import DuckDuckGoSearchRun
 from langchain.agents import initialize_agent, AgentType
+from langchain.agents.agent import AgentExecutor
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
