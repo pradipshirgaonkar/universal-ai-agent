@@ -14,14 +14,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# AGENT FIX: 
-from langchain.agents import create_react_agent
-from langchain import hub
-from langchain_core.tools import Tool
-from langchain.memory import ConversationBufferMemory
-from langchain_community.tools import DuckDuckGoSearchRun
+# AGENT FIX: Sirf purana stable path use kar rahe hain
 from langchain.agents import initialize_agent, AgentType
-from langchain.agents.agent import AgentExecutor
 from langchain_core.tools import Tool
 from langchain.memory import ConversationBufferMemory
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -53,14 +47,12 @@ def build_expert_brain():
 vdb, current_subject = build_expert_brain()
 
 # --- STEP 2: TOOLS SETUP ---
-# 1. PDF Tool
 def expert_knowledge(query):
     if vdb:
         results = vdb.similarity_search(query, k=3)
         return "\n".join([r.page_content for r in results])
     return "No PDF uploaded."
 
-# 2. Web Search Tool
 search = DuckDuckGoSearchRun()
 
 tools = [
@@ -85,10 +77,10 @@ api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash", 
     google_api_key=api_key,
-    temperature=0.5,
-    system_instruction="You are a smart assistant. First check the PDF tool. If the info is missing, use Web Search."
+    temperature=0.5
 )
 
+# Stable Agent Initialization
 agent = initialize_agent(
     tools=tools,
     llm=llm,
@@ -109,6 +101,7 @@ if vdb:
             st.write(user_query)
         
         with st.chat_message("assistant"):
+            # agent.run stable version mein kaam karta hai
             response = agent.run(input=user_query)
             st.write(response)
 else:
