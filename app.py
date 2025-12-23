@@ -1,6 +1,7 @@
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import streamlit as st
 import os
 import glob 
@@ -8,11 +9,12 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings # Naya tarika
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.agents import Tool, initialize_agent, AgentType
+from langchain.agents import initialize_agent, AgentType
+from langchain_core.tools import Tool # Yahan se Tool import karein
 from langchain.memory import ConversationBufferMemory
-from langchain_community.tools import DuckDuckGoSearchRun # Naya Tool
+from langchain_community.tools import DuckDuckGoSearchRun
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
