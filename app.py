@@ -2,6 +2,8 @@ import streamlit as st
 import os
 import glob 
 from dotenv import load_dotenv
+
+# Modern LangChain Imports
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma

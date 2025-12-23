@@ -1,11 +1,11 @@
-langchainhub
 streamlit
-langchain
+langchain>=0.1.0
 langchain-community
 langchain-google-genai
 langchain-text-splitters
+langchainhub
 pypdf
 chromadb
 sentence-transformers
 duckduckgo-search
-python-dotenv	
+python-dotenv
