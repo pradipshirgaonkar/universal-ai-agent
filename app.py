@@ -75,8 +75,9 @@ if "memory" not in st.session_state:
 api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-pro",
+    model="gemini-1.5-flash", #  "gemini-pro"
     google_api_key=api_key,
+    version="v1",
     temperature=0.5
 )
 
