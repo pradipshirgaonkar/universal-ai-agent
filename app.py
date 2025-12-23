@@ -75,7 +75,7 @@ if "memory" not in st.session_state:
 api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash", 
+    model="gemini-pro",
     google_api_key=api_key,
     temperature=0.5
 )
@@ -101,8 +101,7 @@ if vdb:
             st.write(user_query)
         
         with st.chat_message("assistant"):
-            # agent.run stable version mein kaam karta hai
-            response = agent.run(input=user_query)
+            response = agent.invoke({"input": user_query})["output"]
             st.write(response)
 else:
     st.error("⚠️ Please add a PDF file in the folder!")
