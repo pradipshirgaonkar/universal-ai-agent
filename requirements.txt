@@ -6,5 +6,4 @@ langchain-text-splitters
 pypdf
 chromadb
 sentence-transformers
-duckduckgo-search
 python-dotenv
