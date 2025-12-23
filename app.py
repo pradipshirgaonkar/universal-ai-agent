@@ -11,30 +11,28 @@ if api_key:
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
 
-st.title("🧠 PDF Quick Chat")
+st.title("🧠 Universal AI Assistant")
 
-uploaded_file = st.file_uploader("Upload PDF", type="pdf")
+uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
 
 if uploaded_file:
-    # 1. Direct PDF Text Extraction (No heavy libraries)
+    # PDF se text nikalne ka sabse stable tarika
     reader = PdfReader(uploaded_file)
-    text = ""
+    pdf_text = ""
     for page in reader.pages:
-        text += page.extract_text()
+        pdf_text += page.extract_text()
     
-    st.success("PDF Loaded!")
+    st.success("PDF analysis complete!")
     
-    user_query = st.chat_input("Ask about the PDF...")
+    query = st.text_input("Ask a question about this PDF:")
     
-    if user_query:
-        with st.chat_message("user"):
-            st.write(user_query)
+    if query:
+        # LLM ko context bhej rahe hain bina kisi extra library ke
+        full_prompt = f"PDF Context: {pdf_text[:15000]}\n\nUser Question: {query}"
         
-        prompt = f"Context: {text[:10000]}\n\nQuestion: {user_query}"
-        
-        with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
             try:
-                response = model.generate_content(prompt)
-                st.write(response.text)
+                response = model.generate_content(full_prompt)
+                st.markdown(response.text)
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"API Error: {e}")
