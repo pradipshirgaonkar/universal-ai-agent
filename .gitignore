@@ -1,4 +1,4 @@
-.env
-PAIAGENT_ENV/
+ENV_PAIAGENT/
 __pycache__/
 *.pyc
+.env
