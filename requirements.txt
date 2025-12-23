@@ -1,7 +1,5 @@
-langchainhub
 streamlit
 langchain
-langchain.agents
 langchain-community
 langchain-google-genai
 langchain-text-splitters
