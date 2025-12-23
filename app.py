@@ -4,28 +4,26 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# MODERN IMPORT: Deprecation error fix 
+from langchain_huggingface import HuggingFaceEmbeddings 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.messages import HumanMessage, AIMessage
 import tempfile
 
-# API Key check
+# API Key
 load_dotenv()
 api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
-# Stable Model Initialization
-# 'gemini-1.5-flash' stable version ke liye yahi string sahi hai
+# Stable Model Initialization (Version v1 is key here)
 try:
     llm = ChatGoogleGenerativeAI(
         model="gemini-1.5-flash", 
         google_api_key=api_key,
         temperature=0.3,
-        # Force the stable API version instead of v1beta
-        version="v1" 
+        version="v1" # v1beta   bypass 
     )
 except Exception as e:
-    st.error(f"Failed to initialize Gemini: {e}"
-)
+    st.error(f"LLM Setup Error: {e}")
 
 # PDF Processing function
 def process_pdf(uploaded_file):
@@ -38,13 +36,13 @@ def process_pdf(uploaded_file):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = text_splitter.split_documents(data)
     
-    # Stable embeddings model
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # Modern Embeddings
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vdb = Chroma.from_documents(docs, embeddings)
     os.remove(tmp_path)
     return vdb
 
-# UI Sidebar & Chat Logic (As before but with fixed versions)
+# UI Sidebar & Chat
 st.sidebar.header("Upload Document")
 uploaded_file = st.sidebar.file_uploader("Choose a PDF file", type="pdf")
 
@@ -70,6 +68,7 @@ if uploaded_file:
         
         with st.chat_message("assistant"):
             try:
+                # Context Retrieval
                 docs = st.session_state.vdb.similarity_search(user_query, k=3)
                 context = "\n".join([d.page_content for d in docs])
                 prompt = f"Context: {context}\n\nQuestion: {user_query}"
@@ -78,6 +77,6 @@ if uploaded_file:
                 st.write(response.content)
                 st.session_state.chat_history.append(AIMessage(content=response.content))
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"Query Error: {e}")
 else:
     st.info("Please upload a PDF to start.")
