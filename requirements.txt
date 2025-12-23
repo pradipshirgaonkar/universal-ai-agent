@@ -1,3 +1,4 @@
+langchainhub
 streamlit
 langchain
 langchain-community
