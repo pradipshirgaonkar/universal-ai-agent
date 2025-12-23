@@ -3,17 +3,12 @@ import os
 import glob 
 from dotenv import load_dotenv
 
-# Pehle basic packages
-import langchain
-import langchain_community
+# Basic Setup
+load_dotenv()
 
-# Ab specific tools ko alag-alag import karein
-from langchain.agents import Tool
-from langchain.agents import AgentExecutor
-from langchain.agents import create_react_agent
-from langchain.memory import ConversationBufferMemory
-
-# Baki components
+# Modern Modular Imports (Avoiding langchain.agents directly)
+from langchain_core.tools import Tool
+from langchain.agents import AgentExecutor, create_react_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
@@ -21,6 +16,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain import hub
+from langchain.memory import ConversationBufferMemory
 
 # --- UI Setup ---
 st.set_page_config(page_title="Universal AI Agent", layout="wide")
