@@ -15,6 +15,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # MODERN AGENT IMPORTS - Fixed Paths
+
+# Modern LangChain Stable Imports
+import langchain
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain import hub
 from langchain_core.tools import Tool
